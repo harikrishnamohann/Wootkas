@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+<rect fill="rgb(238,238,238)" x="0" y="0" width="1920" height="1080"/>
+<circle fill="$color" cx="188.54" cy="211.07" r="$radius"/>
+<circle fill="$color" cx="267.12" cy="433.77" r="$radius"/>
+<circle fill="$color" cx="393.67" cy="377.36" r="$radius"/>
+<circle fill="$color" cx="1770.07" cy="960.9" r="$radius"/>
+<circle fill="$color" cx="1557.33" cy="913.71" r="$radius"/>
+<circle fill="$color" cx="1700.58" cy="801.39" r="$radius"/>
+<text style="fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 53px; white-space: pre; text-anchor: middle;" x="996.143" y="539.106">$greeting</text>
+</svg>
