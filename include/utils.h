@@ -22,4 +22,14 @@ int8_t read_file_content(const char* filename, String* read_content);
 // returns 0 on success and -1 on failure.
 int8_t write_to_file(const char* filename, const String content);
 
+
+// ### project specific definitions ###
+
+char* hsvToRgb(float h, float s, float v);
+char* greet(); // returns greeting message based on time of the day.
+int get_random_range(int x, int y);
+char* get_quote(); // returns random motivational quotes
+char* num_to_str(int num);
+char* join_int_str(char* str, int num);
+
 #endif
