@@ -3,6 +3,9 @@ CFLAGS = -g
 OBJ_DIR = ./obj
 
 all: debug
+	
+run: debug
+	./target/debug
 
 debug: utils strings
 	@ $(CC) $(CFLAGS) $(OBJ_DIR)/strings.o src/main.c $(OBJ_DIR)/utils.o -o target/debug

@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "../include/strings.h"
 #include <time.h>
+#include "../include/strings.h"
 
 // Reads given character sequence file int *read_content.
 // Returns 0 on success and -1 on failures.
@@ -58,7 +58,7 @@ int8_t write_to_file(const char* filename, const String content) {
 }
 
 
-char* hsvToRgb(float h, float s, float v) {
+String hsv_to_rgb(float h, float s, float v) {
     float red, green, blue;
 
     if (s == 0.0f) {
@@ -103,9 +103,10 @@ char* hsvToRgb(float h, float s, float v) {
     if (result != NULL) {
         sprintf(result, "rgb(%d,%d,%d)", r, g, b);
     }
-    return result;
+    return str_from(result);
 }
-char* greet() {
+
+String greet() {
     time_t now;
     now = time(NULL);
     struct tm *local = localtime(&now);
@@ -113,15 +114,15 @@ char* greet() {
     int hour = local->tm_hour;
 
     if (hour >= 5 && hour < 12) {
-        return "Good morning!";
+        return str_from("Good morning!");
     } else if (hour >= 12 && hour < 17) {
-        return "Good afternoon!";
+        return str_from("Good afternoon!");
     } else if (hour >= 17 && hour < 21) {
-        return "Good evening!";
+        return str_from("Good evening!");
     } else {
-        return "Good night!";
+        return str_from("Good night!");
     }
-    return "oops! something happened!";
+    return str_from("oops! something happened!");
 }
 
 int get_random_range(int x, int y) {
@@ -133,7 +134,7 @@ int get_random_range(int x, int y) {
     return x + rand() % (y - x + 1);
 }
 
-char* get_quote() {
+String get_quote() {
     char* quotes[] = {
         "Focus on progress, not perfection.",
         "Small steps every day lead to big results.",
@@ -149,7 +150,7 @@ char* get_quote() {
     
     int num_quotes = sizeof(quotes) / sizeof(quotes[0]);
     int index = rand() % num_quotes;
-    return quotes[index];
+    return str_from(quotes[index]);
 }
 
 void clear_buffer(char* buffer, size_t size) {
@@ -157,16 +158,8 @@ void clear_buffer(char* buffer, size_t size) {
         buffer[i] = '\0';
     }
 }
-char* num_to_str(int num) {
+String num_to_str(int num) {
     char buff[20];
     sprintf(buff, "%d", num);
-    return strdup(buff);
-}
-
-char* join_int_str(char* str, int num) {
-    String buf = str_init(NULL);
-    buf.length = strlen(str) + 2;
-    buf.str = malloc(buf.length);
-    sprintf(buf.str, "%s%d", str, num);
-    return buf.str;
+    return str_from(buff);
 }
