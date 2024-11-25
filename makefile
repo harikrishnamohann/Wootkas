@@ -8,7 +8,7 @@ run: debug
 	./target/debug
 
 debug: utils strings
-	@ $(CC) $(CFLAGS) $(OBJ_DIR)/strings.o src/main.c $(OBJ_DIR)/utils.o -o target/debug
+	@ $(CC) -lm $(CFLAGS) $(OBJ_DIR)/strings.o src/main.c $(OBJ_DIR)/utils.o -o target/debug
 
 list:
 	@ $(CC) -c ./lib/list.c -o $(OBJ_DIR)/list.o $(CFLAGS)

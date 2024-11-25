@@ -60,7 +60,7 @@ int8_t str_replace_all(String* str, const String key, const String value) {
   size_t j, k, key_count = str_key_frequency(*str, key);
 
   if (key_count != 0) {
-    buf.str = (char*)malloc(str->length - (key.length - value.length) * key_count);
+    buf.str = (char*)malloc(str->length - (key.length - value.length) * key_count + 1);
     if (buf.str == NULL) {
       DEBUG_PRINT("err! str_replace_all(): failed to allocate memory for buf.str.\n");
       return -1;
@@ -102,26 +102,34 @@ int64_t str_replace_next(String* str, uint64_t look_from, const String key, cons
 
   String buf = {NULL, 0};
   if (start_pos != -1) {
-    buf.str = (char*)malloc(str->length - key.length + value.length + 1);
-    if (buf.str == NULL) {
-      DEBUG_PRINT("err! str_replace_next(): failed to allocate memory for buf.str.\n");
-      return -1;
-    }
+  size_t i, j;
+    if (key.length == value.length) {
+      for (i = start_pos, j = 0; j < value.length; i++, j++) {
+        str->str[i] = value.str[j];
+      }
+    } else {
+      buf.str = (char*)malloc(str->length - key.length + value.length + 1);
+      if (buf.str == NULL) {
+        DEBUG_PRINT("err! str_replace_next(): failed to allocate memory for buf.str.\n");
+        return -1;
+      }
 
-    for (size_t i = 0; i < start_pos; i++) {
-      buf.str[buf.length++] = str->str[i];
-    }
-    for (size_t i = 0; i < value.length; i++) {
-      buf.str[buf.length++] = value.str[i];
-    }
-    for (size_t i = buf.length - value.length + key.length; i < str->length; i++) {
-      buf.str[buf.length++] = str->str[i];
-    }
+      for (i = 0; i < start_pos; i++) {
+        buf.str[buf.length++] = str->str[i];
+      }
+      for (i = 0; i < value.length; i++) {
+        buf.str[buf.length++] = value.str[i];
+      }
+      for (i = buf.length - value.length + key.length; i < str->length; i++) {
+        buf.str[buf.length++] = str->str[i];
+      }
 
-    buf.str[buf.length] = '\0';
-    str_free(str);
-    *str = buf;
+      buf.str[buf.length] = '\0';
+      str_free(str);
+      *str = buf;
+    }
     return start_pos + value.length;
+      
   }
   return -1;
 }

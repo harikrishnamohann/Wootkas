@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <time.h>
 #include "../include/strings.h"
+#include <math.h>
 
 // Reads given character sequence file int *read_content.
 // Returns 0 on success and -1 on failures.
@@ -56,7 +57,6 @@ int8_t write_to_file(const char* filename, const String content) {
     
     return (written == str_len(content)) ? 0 : -1;   
 }
-
 
 String hsv_to_rgb(float h, float s, float v) {
     float red, green, blue;
@@ -125,15 +125,6 @@ String greet() {
     return str_from("oops! something happened!");
 }
 
-int get_random_range(int x, int y) {
-    if (x > y) {
-        int temp = x;
-        x = y;
-        y = temp;
-    }
-    return x + rand() % (y - x + 1);
-}
-
 String get_quote() {
     char* quotes[] = {
         "Focus on progress, not perfection.",
@@ -153,13 +144,86 @@ String get_quote() {
     return str_from(quotes[index]);
 }
 
-void clear_buffer(char* buffer, size_t size) {
-    for (size_t i = 0; i < size; i++) {
-        buffer[i] = '\0';
-    }
-}
 String num_to_str(int num) {
     char buff[20];
     sprintf(buff, "%d", num);
     return str_from(buff);
+}
+
+// returns a random number between x and y.
+float rand_range(float x, float y) {
+    if (x > y) {
+        float temp = x;
+        x = y;
+        y = temp;
+    }
+    return x + ((float)rand() / RAND_MAX) * (y - x);
+}
+
+// matrix transformation functions.
+typedef struct {int x; int y;} Point;
+
+Point rand_point(Point begin, Point end) {
+    return (Point) {rand_range(begin.x, end.x), rand_range(begin.y, end.y)};
+}
+
+// Function to compute the centroid of the shape
+Point get_centroid(int row, int col, int C[][col]) {
+    int sum_x = 0, sum_y = 0, count = 0;
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j += 2) { // Only x, y pairs
+            sum_x += C[i][j];
+            sum_y += C[i][j + 1];
+            count++;
+        }
+    }
+    return (Point) { sum_x / count, sum_y / count};
+}
+
+// Function to rotate a single point around a given origin
+static void rotate_point(int *x, int *y, Point centroid, double angle_degrees) {
+    double angle_radians = angle_degrees * M_PI / 180.0;
+    double sin_angle = sin(angle_radians);
+    double cos_angle = cos(angle_radians);
+
+    int translated_x = *x - centroid.x;
+    int translated_y = *y - centroid.y;
+
+    // x′=x⋅cos(θ)−y⋅sin(θ)
+    int rotated_x = translated_x * cos_angle - translated_y * sin_angle;
+    // y′=x⋅sin(θ)+y⋅cos(θ)
+    int rotated_y = translated_x * sin_angle + translated_y * cos_angle;
+
+    *x = rotated_x + centroid.x;
+    *y = rotated_y + centroid.y;
+}
+
+// Function to rotate the matrix around its center
+void transform_rotate(int row, int col, int C[][col], double angle_degrees) {
+    Point centroid = get_centroid(row, col, C);
+
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j += 2) { // Only x, y pairs
+            rotate_point(&C[i][j], &C[i][j + 1], centroid, angle_degrees);
+        }
+    }
+}
+
+// Scale the given matrix arount its center.
+void transform_scale(int row, int col, int mat[][col], double scale_factor) {
+    Point origin = get_centroid(row, col, mat);
+    Point translated;
+
+    // Scale each point relative to the centroid
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 6; j += 2) { // Only x, y pairs
+            // Translate point to origin and scale it.
+            translated.x = (mat[i][j] - origin.x) * scale_factor;
+            translated.y = (mat[i][j + 1] - origin.y) * scale_factor;
+
+            // Translate the point back to its original position
+            mat[i][j] = origin.x + translated.x;
+            mat[i][j + 1] = origin.y + translated.y;
+        }
+    }
 }
