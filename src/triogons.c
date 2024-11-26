@@ -40,27 +40,16 @@ static String create_triogon(Point origin) {
 
     // now we need to make an svg <path/> attribute with the data we have. 
     String style = str_from("\"fill:rgb(000,000,000);stroke:none;fill-opacity:1\"");
-    str_replace_next(&style, 0, str_from("rgb(000,000,000)"), hsv_to_rgb(rand_range(0, 300), 0.2f, 0.76f));
+    str_replace_next(&style, 5, str_from("rgb(000,000,000)"), hsv_to_rgb(rand_range(0, 300), 0.2f, 0.76f));
 
-    String d = str_from(NULL);
-    if ((d.str = (char*)malloc(150)) == NULL) {
-        DEBUG_PRINT("err: create_triogons(): failed to allocate memory for d.str.\n");
-        exit(-1);
-    }
-    d.length = sprintf(d.str, "\"M %d,%d C %d,%d %d,%d %d,%d C %d,%d %d,%d %d,%d C %d,%d %d,%d %d,%d Z\"", 
+    String d = str_compose("\"M %d,%d C %d,%d %d,%d %d,%d C %d,%d %d,%d %d,%d C %d,%d %d,%d %d,%d Z\"", 
             C[2][4], C[2][5],
             C[0][0], C[0][1], C[0][2], C[0][3], C[0][4], C[0][5],
             C[1][0], C[1][1], C[1][2], C[1][3], C[1][4], C[1][5],
             C[2][0], C[2][1], C[2][2], C[2][3], C[2][4], C[2][5]
         );
-    d.length = strlen(d.str);
 
-    String path = str_from(NULL);
-    if ((path.str = (char *)malloc(style.length + d.length + 30)) == NULL) {
-        DEBUG_PRINT("err: create_triogons(): failed to allocate memory for path.str.\n");
-        exit(-1);
-    }
-    path.length = sprintf(path.str, "<path style=%s d=%s/>", style.str, d.str);
+    String path = str_compose("<path style=%s d=%s/>", style.str, d.str);
 
     str_free(&style);
     str_free(&d);
