@@ -7,6 +7,7 @@ extern void triogons();
 
 int main() {
     srand(time(NULL));
+    // sample();
     triogons();
     return 0;
 }

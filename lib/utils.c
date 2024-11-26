@@ -58,54 +58,6 @@ int8_t write_to_file(const char* filename, const String content) {
     return (written == str_len(content)) ? 0 : -1;   
 }
 
-String hsv_to_rgb(float h, float s, float v) {
-    float red, green, blue;
-
-    if (s == 0.0f) {
-        red = green = blue = v;
-    } else {
-        float f, p, q, t;
-        int i;
-
-        h /= 60.0f;
-        i = (int)h;
-        f = h - i; 
-        p = v * (1.0f - s);
-        q = v * (1.0f - s * f);
-        t = v * (1.0f - s * (1.0f - f));
-
-        switch (i) {
-            case 0:
-                red = v; green = t; blue = p;
-                break;
-            case 1:
-                red = q; green = v; blue = p;
-                break;
-            case 2:
-                red = p; green = v; blue = t;
-                break;
-            case 3:
-                red = p; green = q; blue = v;
-                break;
-            case 4:
-                red = t; green = p; blue = v;
-                break;
-            default: 
-                red = v; green = p; blue = q;
-                break;
-        }
-    }
-    int r = (int)(red * 255);
-    int g = (int)(green * 255);
-    int b = (int)(blue * 255);
-
-    char* result = (char*)malloc(20);
-    if (result != NULL) {
-        sprintf(result, "rgb(%d,%d,%d)", r, g, b);
-    }
-    return str_from(result);
-}
-
 String greet() {
     time_t now;
     now = time(NULL);
@@ -142,12 +94,6 @@ String get_quote() {
     int num_quotes = sizeof(quotes) / sizeof(quotes[0]);
     int index = rand() % num_quotes;
     return str_from(quotes[index]);
-}
-
-String num_to_str(int num) {
-    char buff[20];
-    sprintf(buff, "%d", num);
-    return str_from(buff);
 }
 
 // returns a random number between x and y.
