@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include "../include/utils.h"
 
 typedef struct String {
@@ -132,4 +133,36 @@ int64_t str_replace_next(String* str, uint64_t look_from, const String key, cons
       
   }
   return -1;
+}
+
+// Returns a composed string, ie; works like sprintf(),
+// but returns the output as a string type.
+// Returns an empty string on error
+// possible errors are format errors and memory allocation failure.
+String str_compose(const char *format, ...) {
+    String result = {NULL, 0};
+
+    va_list args;
+
+    // First pass to calculate the required length
+    va_start(args, format);
+    result.length = vsnprintf(NULL, 0, format, args);
+    va_end(args);
+
+    if (result.length < 0) {
+      DEBUG_PRINT("Error: str_compose(): Error during formatting.\n");
+      return result;
+    }
+
+    result.str = (char *)malloc(result.length + 1);
+    if (!result.str) {
+      DEBUG_PRINT("Error: str_compose(): Memory allocation failed.\n");
+      return result;
+    }
+
+    va_start(args, format);
+    vsnprintf(result.str, result.length + 1, format, args);
+    va_end(args);
+
+    return result;
 }
