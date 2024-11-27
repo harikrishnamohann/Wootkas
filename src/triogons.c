@@ -15,16 +15,20 @@ Functions:
 
 #define CANVAS_WIDTH 1920
 #define CANVAS_HEIGHT 1080
-#define PADDING_X 80
-#define PADDING_Y 80
+#define PADDING_X 100
+#define PADDING_Y 100
+#define SCALE 1.0
+// common divisor is used to maintain relative scaling on other resolutions.
+// 120 is the common divisor of 1920 x 1080
+#define COMMON_DIVISOR 120
+
+// DENSITY determines the number of triogons to create.
+#define DENSITY rand_range(18, 30)
 
 // light and dark theme
 typedef enum {Lumo, Noir} Theme;
-#define LUMO str_from("#EEEEEE")
-#define NOIR str_from("#222222")
-
-// DENSITY determines the number of triogons to create.
-#define DENSITY rand_range(14, 24)
+#define LUMO str_from("#E5E5E5")
+#define NOIR str_from("#212121")
 
 /**
  * @brief Creates a triogon SVG path based on the given origin point.
@@ -44,12 +48,12 @@ static String create_triogon(Point origin) {
     
     // Range for positioning and control point adjustments.
     const Point pos_range = {5, 8};
-    const Point anchor_range = {2, 6};
-    const Point shift = {8, 10};
+    const Point anchor_range = {2, 8};
+    const Point shift = {6.5, 10};
 
     // transformation values
     const float rotation = rand_range(0.0f, 360.0f);
-    const float scale = rand_range(8.0f, 16.0f);
+    const float scale = rand_range(CANVAS_HEIGHT, CANVAS_WIDTH) / COMMON_DIVISOR * SCALE;
 
     // Random color generation using HLSA format.
     const float hue = rand_range(0, 360);
