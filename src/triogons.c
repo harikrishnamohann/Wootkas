@@ -1,5 +1,6 @@
 #include "../include/strings.h"
 #include "../include/utils.h"
+#include <stdio.h>
 
 /**
  * @brief Creates a triogon SVG path based on the given origin point.
@@ -87,13 +88,13 @@ void triogons() {
     Point tmp;
 
     String triogon = str_from(NULL);
+    size_t pos = 0;
     for (int i = 0; i < density; i++) {
-        if (str_replace_all(&file, str_from("$TRIOGONS"), str_from("$TRIOGONS\n$TRIOGONS")) == 0) {
-            tmp = rand_point(padding, padded_dimensions);
-            triogon = create_triogon(tmp);
-            str_replace_next(&file, 0, str_from("$TRIOGONS"), triogon);
-            str_free(&triogon);
-        }
+        tmp = rand_point(padding, padded_dimensions);
+        triogon = create_triogon(tmp);
+        str_replace_next(&file, pos, str_from("$TRIOGONS"), str_from("$TRIOGONS\n$TRIOGONS"));
+        pos = str_replace_next(&file, pos, str_from("$TRIOGONS"), triogon);
+        str_free(&triogon);
     }
     str_replace_next(&file, 0, str_from("$TRIOGONS"), str_from(""));
     
