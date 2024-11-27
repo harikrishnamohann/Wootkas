@@ -2,7 +2,6 @@
 #define __UTILS_H__
 
 #include <stdint.h>
-#include "arena.h"
 
 // to toggle error messages.
 #define DEBUG 1
