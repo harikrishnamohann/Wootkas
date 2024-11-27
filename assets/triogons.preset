@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
-<rect x="0" y="0" width="1920" height="1080" style="fill: rgb(237, 237, 237);"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="$CANVAS_WIDTH" height="$CANVAS_HEIGHT" viewBox="0 0 $CANVAS_WIDTH $CANVAS_HEIGHT">
+<rect x="0" y="0" width="$CANVAS_WIDTH" height="$CANVAS_HEIGHT" style="fill: $THEME;"/>
 $TRIOGONS
 </svg>
 

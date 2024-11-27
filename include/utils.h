@@ -2,6 +2,7 @@
 #define __UTILS_H__
 
 #include <stdint.h>
+#include <stdio.h>
 
 // to toggle error messages.
 #define DEBUG 1
@@ -33,7 +34,7 @@ float rand_range(float x, float y);
 String get_quote();
 String num_to_str(int num);
 
-typedef struct {int x; int y;} Point;
+typedef struct {float x; float y;} Point;
 
 // generates random point between begin and end.
 Point rand_point(Point begin, Point end);

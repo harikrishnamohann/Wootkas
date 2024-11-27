@@ -2,13 +2,14 @@
 #include <time.h>
 #include <stdlib.h>
 
-extern void sample();
-extern void triogons();
+typedef enum {lumos, noir} Theme;
 
-int main() {
+extern void sample();
+extern void triogons(Theme);
+
+int main(int argc, char** argv) {
     srand(time(NULL));
-    // sample();
-    triogons();
+    triogons(lumos);
     return 0;
 }
 

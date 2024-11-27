@@ -107,7 +107,7 @@ float rand_range(float x, float y) {
 }
 
 // matrix transformation functions.
-typedef struct {int x; int y;} Point;
+typedef struct {float x; float y;} Point;
 
 Point rand_point(Point begin, Point end) {
     return (Point) {rand_range(begin.x, end.x), rand_range(begin.y, end.y)};
@@ -115,7 +115,7 @@ Point rand_point(Point begin, Point end) {
 
 // Function to compute the centroid of the shape
 Point get_centroid(int row, int col, int C[][col]) {
-    int sum_x = 0, sum_y = 0, count = 0;
+    float sum_x = 0, sum_y = 0, count = 0;
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j += 2) { // Only x, y pairs
             sum_x += C[i][j];
