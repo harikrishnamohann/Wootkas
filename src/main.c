@@ -10,7 +10,7 @@ extern void triogons(uint16_t width, uint16_t height, Theme theme);
 
 int main(int argc, char** argv) {
     srand(time(NULL));
-    triogons(1600, 900, Noir);
+    triogons(1080, 2400, Noir);
     return 0;
 }
 
