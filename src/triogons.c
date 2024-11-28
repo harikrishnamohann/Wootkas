@@ -4,32 +4,38 @@ based on Bézier curves—and write them into an SVG file. The shapes are genera
 random transformations (positioning, scaling, rotation) to ensure visual variability.
 
 Functions:
-    * `create_triogon(Point origin)`: Generates a single triogon with randomized attributes.
+    * `void create_triogon(Point origin)`: Generates a single triogon with randomized attributes.
         - origin: Starting point of a triogon
 
-    * `triogons(Theme theme)`: generate multiple triogons and writes the SVG file.
+    * `void triogons(width, height, theme)`: generate multiple triogons and writes the SVG file.
+        - width: width of the canvas
+        - height: height of the canvas
         - theme: (Lumo or Noir) choose whether to use light(Lumo) or dark(Noir) style.
 */
 #include "../include/strings.h"
 #include "../include/utils.h"
 
-#define CANVAS_WIDTH 1920
-#define CANVAS_HEIGHT 1080
-#define PADDING_X 100
-#define PADDING_Y 100
+#define PADDING 60
 #define SCALE 1.0
-// common divisor is used to maintain relative scaling on other resolutions.
-// 120 is the common divisor of 1920 x 1080
-#define COMMON_DIVISOR 120
-
-// DENSITY determines the number of triogons to create.
+// total no of shapes:
 #define DENSITY rand_range(18, 30)
+// HSLA color:
+#define HUE rand_range(0, 360)
+#define SATURATION (int)rand_range(30, 65)
+#define LIGHTNESS (int)rand_range(55, 85)
+#define ALPHA 0.72
 
 // light and dark theme
 typedef enum {Lumo, Noir} Theme;
 #define LUMO str_from("#E5E5E5")
-#define NOIR str_from("#212121")
+#define NOIR str_from("#121212")
 
+// common divisor is used to maintain relative scaling for other resolutions.
+// 120 is the common divisor of 1920 x 1080. It is not necessary to change it.
+#define COMMON_DIVISOR 120
+
+static uint16_t CANVAS_WIDTH = 1920;
+static uint16_t CANVAS_HEIGHT = 1080;
 /**
  * @brief Creates a triogon SVG path based on the given origin point.
  *
@@ -50,16 +56,6 @@ static String create_triogon(Point origin) {
     const Point pos_range = {5, 8};
     const Point anchor_range = {2, 8};
     const Point shift = {6.5, 10};
-
-    // transformation values
-    const float rotation = rand_range(0.0f, 360.0f);
-    const float scale = rand_range(CANVAS_HEIGHT, CANVAS_WIDTH) / COMMON_DIVISOR * SCALE;
-
-    // Random color generation using HLSA format.
-    const float hue = rand_range(0, 360);
-    const int saturation = (int)rand_range(30, 65);
-    const int lightness = (int)rand_range(55, 85);
-    const float alpha = 0.75; // For some transparancy.
 
     // creating the shape with entropy.
     C[2][4] = origin.x;
@@ -84,12 +80,13 @@ static String create_triogon(Point origin) {
     C[2][2] = C[2][4] - rand_range(anchor_range.x, anchor_range.y);
     C[2][3] = C[2][5] + rand_range(anchor_range.x, anchor_range.y);
 
-    // more entropy
-    transform_rotate(3, 6, C, rotation);
+    // more entropy using transformations.
+    const float scale = rand_range(CANVAS_HEIGHT, CANVAS_WIDTH) / COMMON_DIVISOR * SCALE;
+    transform_rotate(3, 6, C, rand_range(0, 360));
     transform_scale(3, 6, C, scale);
 
     // now we need to make an svg <path/> attribute with the data we have. 
-    String color = str_compose("hsla(%f,%d\%,%d\%,%f)", hue, saturation, lightness, alpha);
+    String color = str_compose("hsla(%f,%d\%,%d\%,%f)", HUE, SATURATION, LIGHTNESS, ALPHA);
     String d = str_compose("\"M %d,%d C %d,%d %d,%d %d,%d C %d,%d %d,%d %d,%d C %d,%d %d,%d %d,%d Z\"", 
             C[2][4], C[2][5],
             C[0][0], C[0][1], C[0][2], C[0][3], C[0][4], C[0][5],
@@ -114,15 +111,16 @@ static String create_triogon(Point origin) {
  *
  * @param theme The visual theme (Lumo or Noir).
  */
-void triogons(Theme theme) {
+void triogons(uint16_t width, uint16_t height, Theme theme) {
     String file = str_from(NULL);
     if (read_file_content("./assets/triogons.preset", &file) != 0) {
         DEBUG_PRINT("Err: triogons(): error while accessing file\n");
         return;
     }
-    const Point padding = {PADDING_X, PADDING_Y};
-    const Point padded_dimensions = {CANVAS_WIDTH - padding.x, CANVAS_HEIGHT - padding.y};
 
+    CANVAS_HEIGHT = height;
+    CANVAS_WIDTH = width;
+    Point origin;
     String tmp = str_compose("%d", CANVAS_HEIGHT);
     str_replace_all(&file, str_from("$CANVAS_HEIGHT"), tmp);
     str_free(&tmp);
@@ -132,7 +130,8 @@ void triogons(Theme theme) {
 
     size_t pos = str_replace_next(&file, 0, str_from("$THEME"), (theme == Noir) ? NOIR : LUMO);
     for (uint16_t i = 0; i < DENSITY; i++) {
-        tmp = create_triogon(rand_point(padding, padded_dimensions));
+        origin = rand_point((Point){PADDING, PADDING}, (Point){CANVAS_WIDTH - PADDING, CANVAS_HEIGHT - PADDING});
+        tmp = create_triogon(origin);
         str_replace_next(&file, pos, str_from("$TRIOGONS"), str_from("$TRIOGONS\n$TRIOGONS"));
         pos = str_replace_next(&file, pos, str_from("$TRIOGONS"), tmp);
         str_free(&tmp);
