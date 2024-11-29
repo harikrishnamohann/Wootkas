@@ -161,8 +161,8 @@ void transform_scale(int row, int col, int mat[][col], double scale_factor) {
     Point translated;
 
     // Scale each point relative to the centroid
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 6; j += 2) { // Only x, y pairs
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j += 2) { // Only x, y pairs
             // Translate point to origin and scale it.
             translated.x = (mat[i][j] - origin.x) * scale_factor;
             translated.y = (mat[i][j + 1] - origin.y) * scale_factor;
