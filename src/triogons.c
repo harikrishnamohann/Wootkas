@@ -16,13 +16,13 @@ Functions:
 #include "../include/utils.h"
 
 // some customization options.
-#define SCALE_FACTOR 1.0
-#define DENSITY rand_range(18, 30)
+#define SCALE_FACTOR 1.3
+#define DENSITY rand_range(12, 23)
 // HSLA color:
 #define HUE rand_range(0, 360)
 #define SATURATION (int)rand_range(30, 65)
-#define LIGHTNESS(theme) (int)((theme == Lumos) ? rand_range(46, 78) : rand_range(65, 98))
-#define ALPHA 0.72
+#define LIGHTNESS(theme) (int)((theme == Lumos) ? rand_range(46, 78) : rand_range(65, 95))
+#define ALPHA(theme) (theme == Lumos) ? 0.72 : 0.8
 
 // light and dark theme
 typedef enum {Lumos, Noir} Theme;
@@ -85,7 +85,7 @@ static String create_triogon(Point origin, Theme theme) {
     transform_scale(3, 6, C, scale);
 
     // now we need to make an svg <path/> attribute with the data we have. 
-    String color = str_compose("hsla(%f,%d\%,%d\%,%f)", HUE, SATURATION, LIGHTNESS(theme), ALPHA);
+    String color = str_compose("hsla(%f,%d\%,%d\%,%f)", HUE, SATURATION, LIGHTNESS(theme), ALPHA(theme));
     String d = str_compose("\"M %d,%d C %d,%d %d,%d %d,%d C %d,%d %d,%d %d,%d C %d,%d %d,%d %d,%d Z\"", 
             C[2][4], C[2][5],
             C[0][0], C[0][1], C[0][2], C[0][3], C[0][4], C[0][5],
